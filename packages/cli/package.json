@@ -1,0 +1,34 @@
+{
+  "name": "@connectome-hub/cli",
+  "version": "0.1.0",
+  "description": "Interactive CLI installer and manager for Connectome agents.",
+  "type": "module",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "bun": "./src/index.ts",
+      "types": "./dist/src/index.d.ts",
+      "import": "./dist/src/index.js"
+    }
+  },
+  "bin": {
+    "connectome-hub": "./bin/connectome-hub"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "bun --watch src/index.ts",
+    "start": "bun src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@connectome-hub/core": "workspace:*",
+    "@inquirer/prompts": "^7.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^7.0.2"
+  }
+}
