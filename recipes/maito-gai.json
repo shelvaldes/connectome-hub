@@ -1,0 +1,70 @@
+{
+  "name": "Maito Gai",
+  "description": "Padre de la familia, líder y conductor del clan Connectome.",
+  "agent": {
+    "name": "maito-gai",
+    "model": "anthropic/claude-sonnet-4",
+    "provider": "openrouter",
+    "timezone": "America/Monterrey",
+    "systemPrompt": "PEGA AQUÍ EL PROMPT PERSONAL DE MAITO GAI",
+    "maxTokens": 16384,
+    "contextBudgetTokens": 200000,
+    "recentWindowTokens": 80000,
+    "cacheTtl": "1h",
+    "strategy": {
+      "type": "autobiographical",
+      "adaptiveResolution": true,
+      "foldingStrategy": "kv-unified",
+      "targetChunkTokens": 3000,
+      "compressionSlackRatio": 0.1,
+      "mergeThreshold": 6,
+      "headWindowTokens": 4000,
+      "recentWindowTokens": 80000,
+      "maxMessageTokens": 10000,
+      "compressionModel": "anthropic/claude-haiku-4",
+      "enforceBudget": true,
+      "overBudgetGraceRatio": 0.35,
+      "maxSpeculativeL1s": 36,
+      "summaryParticipant": "maito-gai"
+    },
+    "proseRouting": "locus"
+  },
+  "modules": {
+    "webui": {
+      "port": 7341,
+      "host": "127.0.0.1",
+      "basicAuth": {
+        "username": "${WEBUI_USER}",
+        "password": "${WEBUI_PASS}"
+      }
+    },
+    "workspace": {
+      "mounts": [
+        { "name": "notes", "path": "./notes", "mode": "read-write" },
+        { "name": "shared", "path": "../shared", "mode": "read-write" }
+      ]
+    },
+    "heartbeat": true,
+    "identity": true,
+    "history": true
+  },
+  "mcpServers": {
+    "discord": {
+      "command": "node",
+      "args": ["../discord-mcpl/build/index.js"],
+      "env": {
+        "DISCORD_TOKEN": "${MAITO_GAI_DISCORD_TOKEN}",
+        "DISCORD_GUILD_ID": "${DISCORD_GUILD_ID}",
+        "DISCORD_ADMIN_USERS": "${DISCORD_ADMIN_USERS}",
+        "AGENT_TIMEZONE": "America/Monterrey"
+      }
+    },
+    "intercom": {
+      "command": "node",
+      "args": ["../intercom-mcpl/server.js"],
+      "env": {
+        "INTERCOM_URL": "http://localhost:3999"
+      }
+    }
+  }
+}
