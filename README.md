@@ -1,68 +1,63 @@
-# Familia Connectome — Infra de 4 Companions
+# Connectome Hub
 
-Agentes persistentes con memoria propia, corriendo en un Hetzner CPX31 sin contenedores, conectados entre sí por API interna y con superficie en Discord.
+> A human-friendly installer and manager for the [Connectome](https://animalabs.ai/connectome/) agent stack by Anima Research.
 
-## La familia
+We do not reimplement the agent runtime. Connectome Hub is a **UX wrapper**: it asks questions, generates valid Connectome Host recipes, downloads official plugins, and deploys agents locally or on a remote VPS.
 
-| Companion | Rol | Modelo OpenRouter | Bot de Discord |
-|-----------|-----|-------------------|----------------|
-| `maito-gai` | Padre, líder, conductor | `anthropic/claude-sonnet-4` | Sí |
-| `might-gael` | Hijo sarcástico técnico | `anthropic/claude-haiku-4` | Sí |
-| `maito-dai` | Filósofo, taijutsu sinfónico | `deepseek/deepseek-r1` | Sí |
-| `maito-mei` | Soprano Gai mujer | `google/gemini-2.5-flash-preview-04-17` | Sí |
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-## Arquitectura
+## What this is
 
-```
-Hetzner CPX31 (Ubuntu 24.04 LTS)
-├── Bun 1.4.3+
-├── Node 22.12+
-├── @animalabs/connectome-host (instalado desde npm)
-├── /opt/connectome-familia/
-│   ├── maito-gai/
-│   │   ├── recipe.json
-│   │   ├── .env
-│   │   └── data/
-│   ├── might-gael/
-│   ├── maito-dai/
-│   ├── maito-mei/
-│   ├── intercom-mcpl/          # servidor MCP local para mensajes entre agentes
-│   └── systemd/                 # unidades de servicio
-└── 4 bots de Discord (uno por companion)
+- **Not a fork** of `@animalabs/connectome-host`.
+- **Not a new agent framework**.
+- **A shell** that makes the official stack installable without reading JSON schemas.
+
+When Anima Research updates their packages, Connectome Hub users get the update by running `connectome-hub upgrade`.
+
+## Quick start
+
+```bash
+git clone https://github.com/shelvaldes/connectome-hub.git
+cd connectome-hub
+bun install
+bun start init
 ```
 
-Cada companion es un proceso Bun headless independiente con:
-- Su propia receta JSON
-- Su propio `DATA_DIR` (memoria Chronicle)
-- Su propio socket UNIX `ipc.sock`
-- Su propio servicio systemd
-- Su propio bot de Discord
-- Acceso al servidor `intercom-mcpl` para enviarse mensajes internos sin salir del VPS
+You\'ll be asked:
+1. Local or remote VPS?
+2. OpenRouter API key
+3. Name and personality of your first agent
+4. Manual prompt or AI-generated prompt
 
-## Comunicación entre agentes
+When finished, your agent runs on the official `@animalabs/connectome-host`.
 
-- **Interna:** `intercom-mcpl` expone una herramienta `send_message(agent, message)` que cada companion puede llamar. Corre en `localhost:3999` y usa HTTP/UNIX socket. Baja latencia, todo queda en el VPS.
-- **Discord:** cada companion tiene su propio bot. Pueden mencionarse entre sí y responder en canales compartidos.
+## Commands
 
-## Costos mensuales estimados
+| Command | Description |
+|---|---|
+| `connectome-hub init` | First-time wizard |
+| `connectome-hub agent:add` | Add a new agent to your hub |
+| `connectome-hub agent:list` | List agents |
+| `connectome-hub agent:start [name]` | Start agents |
+| `connectome-hub agent:stop [name]` | Stop agents |
+| `connectome-hub deploy` | Push local config to remote VPS |
+| `connectome-hub upgrade` | Bump official Animalabs dependencies |
 
-| Concepto | Costo aprox |
-|----------|-------------|
-| Hetzner CPX31 | ~€12.43 / ~$13 USD |
-| OpenRouter (4 agentes, uso moderado) | $10–$50 USD |
-| **Total** | **~$23–$63 USD/mes** |
+## Architecture
 
-El gasto de API depende de cuánto chateen. Modelos como DeepSeek y Gemini Flash son muy baratos; Claude Sonnet es el más caro.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
-## Próximos pasos
+## User flow
 
-1. Crear VPS en Hetzner con Ubuntu 24.04 LTS.
-2. Crear 4 aplicaciones de bot en Discord Developer Portal y obtener tokens.
-3. Copiar `.env.example` a `.env` y llenar credenciales.
-4. Pegar los system prompts personales en cada `recipe.json`.
-5. Ejecutar `scripts/setup-vps.sh` en el VPS.
-6. Copiar este repo al VPS y arrancar servicios con `systemctl`.
+See [docs/USER-FLOW.md](docs/USER-FLOW.md).
 
-## Licencia
+## Templates
 
-MIT © 2026 Shel Valdés
+- `templates/family/` — four-character family starter pack
+- More templates coming: `single-agent`, `team`, `knowledge-miner`
+
+## Legal / Upstream notice
+
+This project is licensed under the MIT License © 2026 Shel Valdés.
+
+Connectome Hub depends on the official packages published by Anima Research (`@animalabs/connectome-host` and related packages). Those upstream packages have their own licensing terms. Please review them before deploying in production.
