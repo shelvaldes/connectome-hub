@@ -9,7 +9,13 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["bun", "node"],
+    "baseUrl": ".",
+    "paths": {
+      "@connectome-hub/core": ["packages/core/src/index.ts"],
+      "@connectome-hub/core/*": ["packages/core/src/*"]
+    }
   },
   "include": ["packages/*/src/**/*"],
   "exclude": ["node_modules", "dist"]
