@@ -62,3 +62,7 @@ El gasto de API depende de cuánto chateen. Modelos como DeepSeek y Gemini Flash
 4. Pegar los system prompts personales en cada `recipe.json`.
 5. Ejecutar `scripts/setup-vps.sh` en el VPS.
 6. Copiar este repo al VPS y arrancar servicios con `systemctl`.
+
+## Licencia
+
+MIT © 2026 Shel Valdés
