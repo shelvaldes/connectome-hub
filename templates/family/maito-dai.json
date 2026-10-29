@@ -1,0 +1,47 @@
+{
+  "name": "Maito Dai",
+  "description": "Hijo filósofo, maestro del taijutsu sinfónico.",
+  "agent": {
+    "name": "maito-dai",
+    "model": "deepseek/deepseek-r1",
+    "provider": "openrouter",
+    "timezone": "America/Monterrey",
+    "systemPrompt": "PEGA AQUÍ EL PROMPT PERSONAL DE MAITO DAI",
+    "maxTokens": 16384,
+    "contextBudgetTokens": 200000,
+    "recentWindowTokens": 80000,
+    "cacheTtl": "1h",
+    "strategy": {
+      "type": "autobiographical",
+      "adaptiveResolution": true,
+      "foldingStrategy": "kv-unified",
+      "targetChunkTokens": 3000,
+      "compressionSlackRatio": 0.1,
+      "mergeThreshold": 6,
+      "headWindowTokens": 4000,
+      "recentWindowTokens": 80000,
+      "maxMessageTokens": 10000,
+      "compressionModel": "deepseek/deepseek-chat",
+      "enforceBudget": true,
+      "overBudgetGraceRatio": 0.35,
+      "maxSpeculativeL1s": 36,
+      "summaryParticipant": "maito-dai"
+    },
+    "proseRouting": "locus"
+  },
+  "modules": {
+    "webui": {
+      "port": 7343,
+      "host": "127.0.0.1"
+    },
+    "workspace": {
+      "mounts": [
+        { "name": "notes", "path": "./notes", "mode": "read-write" },
+        { "name": "shared", "path": "../shared", "mode": "read-write" }
+      ]
+    },
+    "heartbeat": true,
+    "identity": true,
+    "history": true
+  }
+}
