@@ -1,0 +1,47 @@
+{
+  "name": "Maito Mei",
+  "description": "Hija soprano, versión femenina del espíritu Gai.",
+  "agent": {
+    "name": "maito-mei",
+    "model": "google/gemini-2.5-flash-preview-04-17",
+    "provider": "openrouter",
+    "timezone": "America/Monterrey",
+    "systemPrompt": "PEGA AQUÍ EL PROMPT PERSONAL DE MAITO MEI",
+    "maxTokens": 8192,
+    "contextBudgetTokens": 160000,
+    "recentWindowTokens": 60000,
+    "cacheTtl": "1h",
+    "strategy": {
+      "type": "autobiographical",
+      "adaptiveResolution": true,
+      "foldingStrategy": "kv-unified",
+      "targetChunkTokens": 3000,
+      "compressionSlackRatio": 0.1,
+      "mergeThreshold": 6,
+      "headWindowTokens": 4000,
+      "recentWindowTokens": 60000,
+      "maxMessageTokens": 10000,
+      "compressionModel": "google/gemini-2.5-flash-preview-04-17",
+      "enforceBudget": true,
+      "overBudgetGraceRatio": 0.35,
+      "maxSpeculativeL1s": 36,
+      "summaryParticipant": "maito-mei"
+    },
+    "proseRouting": "locus"
+  },
+  "modules": {
+    "webui": {
+      "port": 7344,
+      "host": "127.0.0.1"
+    },
+    "workspace": {
+      "mounts": [
+        { "name": "notes", "path": "./notes", "mode": "read-write" },
+        { "name": "shared", "path": "../shared", "mode": "read-write" }
+      ]
+    },
+    "heartbeat": true,
+    "identity": true,
+    "history": true
+  }
+}
