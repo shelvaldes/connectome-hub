@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+dist/
+*.tsbuildinfo
+
+# Logs
+*.log
+
+# Environment
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# Data directories created by running agents
+data/
+**/data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDEs
+.vscode/
+.idea/
+
+# Temporary
+tmp/
+temp/
+coverage/
+
+# Lockfiles we do not commit (we use bun.lockb)
+package-lock.json
+yarn.lock
