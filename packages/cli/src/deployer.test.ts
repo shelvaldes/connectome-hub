@@ -8,10 +8,11 @@ const agent: AgentSpec = {
 };
 
 describe('deployer', () => {
-  it('builds a systemd unit named <agent>-agent.service', () => {
+  it('builds a systemd unit with description and headless flag', () => {
     const unit = buildSystemdUnit(agent, '/opt/connectome-hub', '/root');
-    expect(unit).toContain('maito-gai-agent.service');
+    expect(unit).toContain('Description=Connectome agent: maito-gai');
     expect(unit).toContain('--headless');
+    expect(unit).toContain('ExecStart=/root/.bun/bin/bun');
   });
 
   it('builds a remote script with install steps', () => {
