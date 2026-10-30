@@ -54,6 +54,19 @@ export function buildSystemdUnit(agent: AgentSpec, baseDir: string, homeDir: str
   ].join('\n');
 }
 
+// Genera el comando systemd para arrancar/parar un agente.
+export function buildControlCommand(
+  target: 'local' | 'remote',
+  action: 'start' | 'stop' | 'restart' | 'status',
+  agentName: string,
+  remoteUser?: string,
+  remoteHost?: string
+): string {
+  const svc = `${agentName}-agent.service`;
+  if (target === 'local') return `systemctl --user ${action} ${svc}`;
+  return `ssh ${remoteUser}@${remoteHost} "systemctl --user ${action} ${svc}"`;
+}
+
 export function buildRemoteScript(options: DeployOptions): string {
   const lines: string[] = [];
   const user = options.remoteUser || 'root';
