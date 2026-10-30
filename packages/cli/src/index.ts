@@ -1,5 +1,5 @@
 #!/usr/bin/env bun
-// En nombre de San Miguel Arcángel
+// In the name of Saint Michael the Archangel
 
 import { program } from 'commander';
 import chalk from 'chalk';
