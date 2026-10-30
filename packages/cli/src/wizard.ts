@@ -6,7 +6,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 
-// En nombre de San Miguel Arcángel
+// In the name of Saint Michael the Archangel
 export async function runInit() {
   console.log(chalk.cyan('\n😈 Mike (temporary guide): I\'ll help you set up your first Connectome agent.\n'));
 
