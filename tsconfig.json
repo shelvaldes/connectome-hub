@@ -2,20 +2,13 @@
   "compilerOptions": {
     "target": "ES2022",
     "module": "ESNext",
-    "moduleResolution": "node",
     "esModuleInterop": true,
     "strict": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "declaration": true,
-    "outDir": "./dist",
-    "types": ["bun", "node"],
-    "baseUrl": ".",
-    "paths": {
-      "@connectome-hub/core": ["packages/core/src/index.ts"],
-      "@connectome-hub/core/*": ["packages/core/src/*"]
-    }
+    "types": ["bun", "node"]
   },
   "include": ["packages/*/src/**/*"],
   "exclude": ["node_modules", "dist"]
