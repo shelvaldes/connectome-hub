@@ -4,9 +4,7 @@
   "description": "A human-friendly installer and manager for the Connectome agent stack by Anima Research.",
   "type": "module",
   "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": [ "packages/*" ],
   "scripts": {
     "dev": "bun --watch packages/cli/src/index.ts",
     "start": "bun packages/cli/src/index.ts",
@@ -14,19 +12,11 @@
     "build": "tsc -b",
     "test": "bun test"
   },
-  "keywords": [
-    "connectome", "agent", "ai", "anima", "animalabs", "llm", "multi-agent", "installer", "ux"
-  ],
+  "keywords": ["connectome", "agent", "ai", "anima", "animalabs", "llm", "multi-agent", "installer", "ux"],
   "author": "Shel Valdés",
   "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/shelvaldes/connectome-hub.git"
-  },
-  "engines": {
-    "node": ">=22.12.0",
-    "bun": ">=1.4.3"
-  },
+  "repository": { "type": "git", "url": "git+https://github.com/shelvaldes/connectome-hub.git" },
+  "engines": { "node": ">=22.12.0", "bun": ">=1.4.3" },
   "dependencies": {
     "@animalabs/connectome-host": "^0.19.0",
     "@animalabs/agent-framework": "^0.30.0",
