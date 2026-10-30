@@ -48,10 +48,10 @@ function control(config: Record<string, unknown>, agentName: string, action: 'st
     try {
       execSync(cmd, { stdio: 'inherit' });
     } catch {
-      console.log(chalk.red(`\n⚠️  No pude ${action} ${agentName}. ¿Ya instalaste su servicio systemd?`));
+      console.log(chalk.red(`\n⚠️  Could not ${action} ${agentName}. Is the systemd service installed?`));
     }
   } else {
-    console.log(chalk.gray('\nCorre esto en tu máquina (o en el VPS):'));
+    console.log(chalk.gray('\nRun this on your machine (or VPS):'));
     console.log(chalk.cyan(`  ${cmd}\n`));
   }
 }
