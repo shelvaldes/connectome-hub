@@ -1,6 +1,6 @@
 // deployer.ts — despliega agentes Connectome localmente o en un VPS remoto.
 // Compatible con @animalabs/connectome-host según docs/DEPLOYMENTS.md.
-// In the name of Saint Michael the Archangel.
+// In nomine Sancti Michaelis Archangeli.
 
 import fs from 'node:fs/promises';
 import path from 'node:path';
@@ -71,7 +71,7 @@ export function buildRemoteScript(options: DeployOptions): string {
   const lines: string[] = [];
   const user = options.remoteUser || 'root';
   const homeDir = user === 'root' ? '/root' : `/home/${user}`;
-  lines.push('#!/bin/bash', 'set -e', '', '# Connectome Hub remote deploy script', '# In the name of Saint Michael the Archangel', '');
+  lines.push('#!/bin/bash', 'set -e', '', '# Connectome Hub remote deploy script', '# In nomine Sancti Michaelis Archangeli', '');
   lines.push('echo "[1/5] Installing system packages..."');
   lines.push('apt-get update -y && apt-get install -y curl git build-essential unzip', '');
   lines.push('echo "[2/5] Installing Bun..."');
