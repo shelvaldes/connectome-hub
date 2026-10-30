@@ -1,12 +1,12 @@
-import { select, input, password, confirm } from '@inquirer/prompts';
+import { select, input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { buildRecipe } from '../../core/src/recipe-builder.js';
+import { buildRecipe } from '@connectome-hub/core';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-// Mike: orientador temporal. En nombre de San Miguel Arcángel.
+// En nombre de San Miguel Arcángel
 export async function runInit() {
-  console.log(chalk.cyan('\nMike (temporary guide): Hi, I\'ll help you set up your first Connectome agent.\n'));
+  console.log(chalk.cyan('\n😈 Mike (temporary guide): I\'ll help you set up your first Connectome agent.\n'));
 
   const target = await select({
     message: 'Where do you want to run your agents?',
@@ -45,11 +45,9 @@ export async function runInit() {
   const outDir = path.join(process.cwd(), 'agents', agentName);
   await fs.mkdir(outDir, { recursive: true });
   await fs.writeFile(path.join(outDir, 'recipe.json'), JSON.stringify(recipe, null, 2));
-
-  const envContent = `OPENROUTER_API_KEY=${apiKey}\nDATA_DIR=${outDir}/data\n`;
-  await fs.writeFile(path.join(outDir, '.env'), envContent);
+  await fs.writeFile(path.join(outDir, '.env'), `OPENROUTER_API_KEY=${apiKey}\nDATA_DIR=${outDir}/data\n`);
 
   console.log(chalk.green(`\n✅ Recipe created at ${outDir}/recipe.json`));
-  console.log(chalk.gray('Next: run bun start to launch the agent locally, or connectome-hub deploy for remote.'));
+  console.log(chalk.gray('Next: run `bun start` to launch the agent locally, or `connectome-hub deploy` for remote.'));
   console.log(chalk.gray('Mike: my job is done. Passing the torch to your agent. 🍥\n'));
 }
