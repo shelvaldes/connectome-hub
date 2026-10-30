@@ -4,6 +4,7 @@
 import { program } from 'commander';
 import chalk from 'chalk';
 import { runInit } from './wizard.js';
+import { addAgent, listAgents } from './commands.js';
 
 program
   .name('connectome-hub')
@@ -21,11 +22,11 @@ program
 program
   .command('agent:add')
   .description('Add a new agent to an existing Connectome Hub setup')
-  .action(async () => console.log(chalk.yellow('agent:add coming soon...')));
+  .action(addAgent);
 
 program
   .command('agent:list')
   .description('List deployed agents')
-  .action(async () => console.log(chalk.yellow('agent:list coming soon...')));
+  .action(listAgents);
 
 program.parse();
