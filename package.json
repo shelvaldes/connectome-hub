@@ -10,20 +10,12 @@
   "scripts": {
     "dev": "bun --watch packages/cli/src/index.ts",
     "start": "bun packages/cli/src/index.ts",
-    "build": "bun run --cwd packages/cli build && bun run --cwd packages/core build",
-    "test": "bun test",
-    "typecheck": "bun run --cwd packages/cli typecheck && bun run --cwd packages/core typecheck"
+    "typecheck": "tsc -b",
+    "build": "tsc -b",
+    "test": "bun test"
   },
   "keywords": [
-    "connectome",
-    "agent",
-    "ai",
-    "anima",
-    "animalabs",
-    "llm",
-    "multi-agent",
-    "installer",
-    "ux"
+    "connectome", "agent", "ai", "anima", "animalabs", "llm", "multi-agent", "installer", "ux"
   ],
   "author": "Shel Valdés",
   "license": "MIT",
