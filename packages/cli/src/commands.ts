@@ -1,5 +1,5 @@
 // commands.ts — agent:add, agent:list, agent:start, agent:stop.
-// In the name of Saint Michael the Archangel.
+// In nomine Sancti Michaelis Archangeli.
 
 import { select, input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
