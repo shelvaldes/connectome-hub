@@ -4,7 +4,7 @@
 import { program } from 'commander';
 import chalk from 'chalk';
 import { runInit } from './wizard.js';
-import { addAgent, listAgents } from './commands.js';
+import { addAgent, listAgents, startAgents, stopAgents } from './commands.js';
 
 program
   .name('connectome-hub')
@@ -28,5 +28,17 @@ program
   .command('agent:list')
   .description('List deployed agents')
   .action(listAgents);
+
+program
+  .command('agent:start')
+  .argument('[name]', 'agent name (omit to pick interactively)')
+  .description('Start one agent or all')
+  .action(startAgents);
+
+program
+  .command('agent:stop')
+  .argument('[name]', 'agent name (omit to pick interactively)')
+  .description('Stop one agent or all')
+  .action(stopAgents);
 
 program.parse();
