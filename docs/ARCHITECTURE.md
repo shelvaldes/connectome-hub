@@ -1,30 +1,23 @@
 # Connectome Hub Architecture
 
-> Connectome Hub is a UX/installer wrapper around the official [Connectome stack](https://animalabs.ai/connectome/) by Anima Research. We do not reimplement any part of the agent runtime, memory system, or provider layer.
+> Connectome Hub is a UX/installer wrapper around the official [Connectome](https://animalabs.ai/connectome/) agent stack by Anima Research. We do not reimplement any part of the agent runtime, memory system, or provider layer.
 
 ## Design principle
 
 **We are the container, not the engine.**
 
-Every agent deployed by Connectome Hub runs through the official `@animalabs/connectome-host` process, with an official recipe JSON, using official `@animalabs/*` libraries. When Anima Research releases a new version, bumping the dependency is usually enough for users to get the update.
+Every agent deployed by Connectome Hub runs through the official `@animalabs/connectome-host` process, with an official recipe JSON, using official `@animalabs/*` libraries. When Anima Research releases a new version, bumping the pinned dependency is usually enough.
 
-## Stack layers
+## Stack
 
 ```
-User-facing layer
-├── CLI (packages/cli)
-│   ├── commands: init, agent:add, agent:list, deploy, upgrade
-│   └── wizard (packages/cli/src/wizard.ts)
-│       └── Mike: temporary onboarding agent
-├── Studio (packages/studio) — future web dashboard
-└── Templates (templates/)
-
-Orchestration layer
-└── Core (packages/core)
-    ├── recipe-builder.ts — generates valid Connectome Host recipes
-    ├── deployer.ts     — local or remote deployment
-    ├── ssh.ts          — remote VPS operations
-    └── plugin-resolver.ts — downloads official MCPL servers
+CLI layer (packages/cli)
+├── src/index.ts         — commander entry point
+├── src/wizard.ts        — Mike, the onboarding wizard
+├── src/commands.ts      — agent:add, agent:list, agent:start, agent:stop
+├── src/deployer.ts      — install dir writer, systemd unit generator,
+                           remote deploy script generator, hub config manager
+└── src/recipe-builder.ts — official Connectome Host recipe generator
 
 Official runtime layer (owned by Anima Research)
 ├── @animalabs/connectome-host
@@ -33,39 +26,38 @@ Official runtime layer (owned by Anima Research)
 ├── @animalabs/membrane
 └── @animalabs/chronicle
 
-Official plugins (separate repos)
-├── anima-research/discord-mcpl
-├── anima-research/heartbeat-mcpl
-├── anima-research/terminal-sessions-mcp
-└── user-provided MCP servers
+Templates
+└── templates/family/ — example recipe pack
 ```
 
-## Package layout
+## Project layout
 
 ```
 connectome-hub/
-├── package.json          # Bun workspace root, pins official deps
-├── packages/
-│   ├── cli/              # interactive installer and manager
-│   ├── core/             # recipe generation and deployment logic
-│   └── studio/           # future web dashboard
-├── templates/            # starter recipe packs
-│   ├── empty/
-│   ├── single-agent/
-│   └── family/
-└── plugins/              # directory where official MCPL servers are cloned
+├── packages/cli/       — interactive CLI (only active package in v0.1.0)
+├── templates/          — starter recipe packs
+├── docs/               — architecture, user flow, roadmap
+└── .github/workflows/  — CI
 ```
 
-## Recipe compatibility
+## Agent install directory
 
-All generated recipes validate against the official Connectome Host recipe schema (`src/recipe.ts`). They use `${VAR}` substitution for secrets so recipes stay safe to commit, while `.env` carries credentials.
+Each agent gets a directory like:
+
+```
+~/.connectome-hub/<agent>/
+├── recipes/<agent>.json   # recipe consumed by connectome-host
+├── .env                    # OPENROUTER_API_KEY, DATA_DIR
+└── data/                   # chronicle store, logs, session state
+```
+
+The recipe follows the official Connectome Host schema. Secrets live only in `.env`.
+
+## Local vs remote
+
+- **Local:** Connectome Hub writes the install directory directly on the user's machine. It can also run `systemctl --user` commands to control agents.
+- **Remote:** Connectome Hub generates a bash deploy script. The user copies it to the VPS and runs it. A future `deploy` command will automate the SSH copy+run step.
 
 ## Updates from upstream
 
-When Anima publishes a new `@animalabs/connectome-host` version, a user can run:
-
-```bash
-connectome-hub upgrade
-```
-
-This bumps the pinned dependency, reinstalls, and restarts agents. No Connectome Hub code changes are required unless the recipe schema changes.
+Bump `@animalabs/connectome-host` and related packages in `package.json`, then reinstall. A future `upgrade` command will automate this.
