@@ -13,8 +13,5 @@
     "rootDir": "./src",
     "types": ["bun", "node"]
   },
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../core" }
-  ]
+  "include": ["src/**/*"]
 }
