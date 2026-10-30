@@ -1,6 +1,6 @@
 # Connectome Hub User Flow
 
-## First install
+## Install
 
 ```bash
 git clone https://github.com/shelvaldes/connectome-hub.git
@@ -9,44 +9,43 @@ bun install
 bun start init
 ```
 
-## Wizard flow
+## First run (`init`)
 
 1. **Target**
    - Local (this machine)
-   - Remote VPS (SSH credentials)
+   - Remote VPS (you will get a deploy script)
 
 2. **Provider**
-   - OpenRouter API key (single key, many models)
+   - OpenRouter API key
 
-3. **Onboarding agent (Mike)**
-   - Temporary guide that asks questions and hands control to the first user agent.
-   - Comment preserved in source: `// En nombre de San Miguel Arcángel`
+3. **Mike** — temporary onboarding agent
+   - Asks for agent name and personality
+   - Lets you paste your own system prompt or generate one from the description
 
-4. **First agent**
-   - Name
-   - Personality description
-   - Prompt choice: manual paste or auto-generate from description
-   - Model (default: `anthropic/claude-haiku-4` via OpenRouter)
+4. **Result**
+   - Local: install dir created at `~/.connectome-hub/<agent>/`
+   - Remote: deploy script generated at `~/.connectome-hub/deploy.sh`
 
-5. **Create another or finish**
-   - Loop back to agent creation
-   - Or finish setup and deploy
-
-## After setup
+## Day-to-day commands
 
 ```bash
-connectome-hub agent:add     # add another agent anytime
-connectome-hub agent:list    # list deployed agents
-connectome-hub agent:start   # start all (or one by name)
-connectome-hub agent:stop    # stop
-connectome-hub deploy        # push local config to remote VPS
-connectome-hub upgrade       # bump official Animalabs deps
+connectome-hub agent:add      # add another agent
+connectome-hub agent:list     # list agents
+connectome-hub agent:start    # start one or all agents (interactive picker)
+connectome-hub agent:stop     # stop one or all agents (interactive picker)
 ```
 
 ## Remote deployment
 
-If the user chose remote, the CLI connects via SSH, installs Bun/Node on the VPS, copies the generated recipes, installs the official dependencies, and registers each agent as a systemd service.
+Run `init` or `agent:add` with `remote` target. Copy the generated script to your VPS and run it:
+
+```bash
+scp ~/.connectome-hub/deploy-<agent>.sh user@host:/tmp/
+ssh user@host bash /tmp/deploy-<agent>.sh
+```
+
+A future `deploy` command will automate this over SSH.
 
 ## Plugins
 
-When the user enables a surface (Discord, shell, etc.), the CLI clones the official MCPL server from the Anima Research repository and wires it into the recipe. No custom protocol is invented.
+When you enable a surface (Discord, shell, etc.), Connectome Hub will download the official MCPL server from Anima Research repositories and wire it into the recipe. Not yet implemented in v0.1.0.
