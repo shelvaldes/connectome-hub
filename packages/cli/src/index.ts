@@ -21,15 +21,11 @@ program
 program
   .command('agent:add')
   .description('Add a new agent to an existing Connectome Hub setup')
-  .action(async () => {
-    console.log(chalk.yellow('agent:add coming soon...'));
-  });
+  .action(async () => console.log(chalk.yellow('agent:add coming soon...')));
 
 program
   .command('agent:list')
   .description('List deployed agents')
-  .action(async () => {
-    console.log(chalk.yellow('agent:list coming soon...'));
-  });
+  .action(async () => console.log(chalk.yellow('agent:list coming soon...')));
 
 program.parse();
