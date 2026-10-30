@@ -1,6 +1,6 @@
 import { select, input, password, confirm } from '@inquirer/prompts';
 import chalk from 'chalk';
-import { buildRecipe } from '@connectome-hub/core';
+import { buildRecipe } from '../../core/src/recipe-builder.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
