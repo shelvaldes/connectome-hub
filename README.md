@@ -1,18 +1,34 @@
 # Connectome Hub
 
+[![CI](https://github.com/shelvaldes/connectome-hub/actions/workflows/ci.yml/badge.svg)](https://github.com/shelvaldes/connectome-hub/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 > A human-friendly installer and manager for the [Connectome](https://animalabs.ai/connectome/) agent stack by Anima Research.
 
-We do not reimplement the agent runtime. Connectome Hub is a **UX wrapper**: it asks questions, generates valid Connectome Host recipes, downloads official plugins, and deploys agents locally or on a remote VPS.
+Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates valid Connectome Host recipes, and deploys agents locally or helps you deploy them on a remote VPS. Every deployed agent runs through the official `@animalabs/connectome-host`.
 
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+## Status
 
-## What this is
+**Current version: v0.1.0** — first MVP release.
 
-- **Not a fork** of `@animalabs/connectome-host`.
-- **Not a new agent framework**.
-- **A shell** that makes the official stack installable without reading JSON schemas.
+| Feature | Status |
+|---|---|
+| Interactive `init` wizard | ✅ |
+| Add agents with `agent:add` | ✅ |
+| List agents with `agent:list` | ✅ |
+| Start/stop agents with `agent:start` / `agent:stop` | ✅ |
+| Local deployment (install dirs + systemd user units) | ✅ |
+| Remote deployment script generator | ✅ |
+| One-click remote `deploy` via SSH | 🚧 Coming in v0.2.0 |
+| Official MCPL plugin downloader | 🚧 Coming in v0.2.0 |
+| Web dashboard (Studio) | 🚧 Future |
 
-When Anima Research updates their packages, Connectome Hub users get the update by running `connectome-hub upgrade`.
+## Requirements
+
+- [Bun](https://bun.sh/) 1.4.3+
+- Linux (systemd user services) or macOS
+- OpenRouter API key
+- For remote: a VPS with SSH access
 
 ## Quick start
 
@@ -23,41 +39,42 @@ bun install
 bun start init
 ```
 
-You\'ll be asked:
-1. Local or remote VPS?
-2. OpenRouter API key
-3. Name and personality of your first agent
-4. Manual prompt or AI-generated prompt
-
-When finished, your agent runs on the official `@animalabs/connectome-host`.
-
 ## Commands
 
 | Command | Description |
 |---|---|
 | `connectome-hub init` | First-time wizard |
-| `connectome-hub agent:add` | Add a new agent to your hub |
-| `connectome-hub agent:list` | List agents |
-| `connectome-hub agent:start [name]` | Start agents |
-| `connectome-hub agent:stop [name]` | Stop agents |
-| `connectome-hub deploy` | Push local config to remote VPS |
-| `connectome-hub upgrade` | Bump official Animalabs dependencies |
+| `connectome-hub agent:add` | Add a new agent |
+| `connectome-hub agent:list` | List deployed agents |
+| `connectome-hub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
+| `connectome-hub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
 
-## Architecture
+## What Connectome Hub creates
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+For each agent, it creates an install directory:
 
-## User flow
+```
+~/.connectome-hub/<agent>/
+├── recipes/<agent>.json   # Connectome Host recipe
+├── .env                    # Secrets (API key, DATA_DIR)
+└── data/                   # Chronicle memory store
+```
 
-See [docs/USER-FLOW.md](docs/USER-FLOW.md).
+## Architecture & flow
 
-## Templates
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/USER-FLOW.md](docs/USER-FLOW.md)
 
-- `templates/family/` — four-character family starter pack
-- More templates coming: `single-agent`, `team`, `knowledge-miner`
+## Roadmap
 
-## Legal / Upstream notice
+See [ROADMAP.md](ROADMAP.md).
 
-This project is licensed under the MIT License © 2026 Shel Valdés.
+## Contributing
 
-Connectome Hub depends on the official packages published by Anima Research (`@animalabs/connectome-host` and related packages). Those upstream packages have their own licensing terms. Please review them before deploying in production.
+See [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT © 2026 Shel Valdés.
+
+Connectome Hub depends on the official packages published by Anima Research (`@animalabs/connectome-host` and related packages). Those upstream packages have their own licensing terms; please review them before deploying in production.
