@@ -9,7 +9,7 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.0** — first MVP release.
+**Current version: v0.1.1** — first MVP release (hotfix: manual model input).
 
 | Feature | Status |
 |---|---|
@@ -48,6 +48,19 @@ bun start init
 | `connectome-hub agent:list` | List deployed agents |
 | `connectome-hub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
 | `connectome-hub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
+
+## Model selection
+
+When creating an agent, you can enter any OpenRouter model ID in `provider/model` format, for example:
+
+```
+anthropic/claude-haiku-4
+anthropic/claude-sonnet-4
+deepseek/deepseek-r1
+google/gemini-2.5-flash-preview-04-17
+```
+
+This keeps the CLI future-proof as OpenRouter updates its catalog.
 
 ## What Connectome Hub creates
 
