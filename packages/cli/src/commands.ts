@@ -20,13 +20,6 @@ import {
 
 export interface AgentRecord { name: string; createdAt: string; }
 
-const MODEL_CHOICES = [
-  { name: 'Claude Haiku 4 (cheap / fast)', value: 'anthropic/claude-haiku-4' },
-  { name: 'Claude Sonnet 4 (balanced)', value: 'anthropic/claude-sonnet-4' },
-  { name: 'DeepSeek R1 (reasoning)', value: 'deepseek/deepseek-r1' },
-  { name: 'Gemini 2.5 Flash (Google)', value: 'google/gemini-2.5-flash-preview-04-17' }
-];
-
 function getAgents(config: Record<string, unknown>): AgentRecord[] {
   return (config.agents as AgentRecord[]) || [];
 }
@@ -65,7 +58,10 @@ export async function addAgent(): Promise<void> {
   const apiKey = await password({ message: 'OpenRouter API key:' });
   const name = await input({ message: 'Name of your new agent:' });
   const personality = await input({ message: "Describe your agent's personality:" });
-  const model = await select({ message: 'Which model?', choices: MODEL_CHOICES });
+  const model = await input({
+    message: 'OpenRouter model ID (provider/model):',
+    default: 'anthropic/claude-haiku-4'
+  });
   const promptChoice = await select({
     message: 'How do you want to set the system prompt?',
     choices: [
