@@ -20,11 +20,15 @@ export async function runInit() {
 
   const apiKey = await password({ message: 'OpenRouter API key:' });
   const agentName = await input({ message: 'Name of your first agent:' });
-  const agentPersonality = await input({ message: 'Describe your agent\'s personality:' });
+  const agentPersonality = await input({ message: "Describe your agent's personality:" });
+  const model = await input({
+    message: 'OpenRouter model ID (provider/model):',
+    default: 'anthropic/claude-haiku-4'
+  });
   const promptChoice = await select({
     message: 'How do you want to set the system prompt?',
     choices: [
-      { name: 'I\'ll paste my own prompt', value: 'manual' },
+      { name: "I'll paste my own prompt", value: 'manual' },
       { name: 'Generate from personality description', value: 'generated' }
     ]
   });
@@ -32,7 +36,7 @@ export async function runInit() {
     ? await input({ message: 'Paste the system prompt:' })
     : `You are ${agentName}. ${agentPersonality}.`;
 
-  const recipe = buildRecipe({ name: agentName, systemPrompt });
+  const recipe = buildRecipe({ name: agentName, systemPrompt, model });
   const slug = agentName.toLowerCase().replace(/\s+/g, '-');
   const agent: AgentSpec = { name: slug, recipe, env: { OPENROUTER_API_KEY: apiKey } };
 
