@@ -9,7 +9,15 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.1** — first MVP release (hotfix: manual model input).
+**Current version: v0.1.2**
+
+### v0.1.2 fixes
+- Local deployment now writes and starts systemd (Linux) or launchd (macOS) services automatically.
+- Remote deploy script now writes a `package.json`, exports `~/.bun/bin` to PATH, and tolerates missing `systemctl`.
+- Model selection is now a free-text OpenRouter model ID instead of a fixed list.
+- WebUI ports are assigned sequentially so multiple agents do not collide.
+- Workspace mounts (`notes`, `shared`) are included in generated recipes.
+- Removed the false `--template` promise from the family template docs.
 
 | Feature | Status |
 |---|---|
@@ -17,10 +25,10 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 | Add agents with `agent:add` | ✅ |
 | List agents with `agent:list` | ✅ |
 | Start/stop agents with `agent:start` / `agent:stop` | ✅ |
-| Local deployment (install dirs + systemd user units) | ✅ |
+| Local deployment (install dirs + systemd/launchd) | ✅ |
 | Remote deployment script generator | ✅ |
-| One-click remote `deploy` via SSH | 🚧 Coming in v0.2.0 |
-| Official MCPL plugin downloader | 🚧 Coming in v0.2.0 |
+| One-click remote `deploy` via SSH | 🚧 Coming in v0.3.0 |
+| Official MCPL plugin downloader | 🚧 Coming in v0.3.0 |
 | Web dashboard (Studio) | 🚧 Future |
 
 ## Requirements
@@ -51,7 +59,7 @@ bun start init
 
 ## Model selection
 
-When creating an agent, you can enter any OpenRouter model ID in `provider/model` format, for example:
+When creating an agent, enter any OpenRouter model ID in `provider/model` format, for example:
 
 ```
 anthropic/claude-haiku-4
@@ -72,6 +80,8 @@ For each agent, it creates an install directory:
 ├── .env                    # Secrets (API key, DATA_DIR)
 └── data/                   # Chronicle memory store
 ```
+
+On Linux it also writes `~/.config/systemd/user/<agent>-agent.service` and starts it. On macOS it writes `~/Library/LaunchAgents/cc.<agent>.agent.plist`.
 
 ## Architecture & flow
 
