@@ -73,13 +73,17 @@ export async function addAgent(): Promise<void> {
     ? await input({ message: 'Paste the system prompt:' })
     : `You are ${name}. ${personality}.`;
 
-  const recipe = buildRecipe({ name, systemPrompt, model });
+  const existingCount = getAgents(config).length;
+  const port = 7340 + existingCount;
+  const recipe = buildRecipe({ name, systemPrompt, model, port });
   const slug = name.toLowerCase().replace(/\s+/g, '-');
   const agentSpec: AgentSpec = { name: slug, recipe, env: { OPENROUTER_API_KEY: apiKey } };
 
   if (config.target === 'local') {
-    const dir = await writeAgentInstallDir(agentSpec, config.baseDir as string);
-    console.log(chalk.green(`\n✅ Agent created at ${dir}`));
+    const baseDir = config.baseDir as string;
+    await writeAgentInstallDir(agentSpec, baseDir);
+    console.log(chalk.green(`\n✅ Agent files created at ${path.join(baseDir, slug)}`));
+    console.log(chalk.gray('Run `connectome-hub agent:start` to start it.'));
   } else {
     const opts: DeployOptions = {
       target: 'remote', baseDir: config.baseDir as string,
