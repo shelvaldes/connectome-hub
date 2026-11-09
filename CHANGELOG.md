@@ -1,5 +1,18 @@
 # Changelog
 
+## v0.1.2 — 2026-11-09
+
+Bug fixes based on first manual review.
+
+### Fixed
+- `deployLocal()` now writes and starts systemd user services on Linux and launchd plists on macOS.
+- `buildRemoteScript()` now writes a `package.json` before `bun install`, exports `~/.bun/bin` to PATH, and tolerates environments without `systemctl`.
+- `wizard.ts` no longer sends the user to a directory without `package.json`; it starts the agent automatically on local installs.
+- `agent:add` assigns sequential WebUI ports so agents do not collide on port 7340.
+- Generated recipes now include workspace mounts (`notes`, `shared`).
+- Model selection is now a free-text OpenRouter model ID instead of a hardcoded dropdown.
+- Removed the false `connectome-hub init --template family` promise from `templates/family/README.md`.
+
 ## v0.1.1 — 2026-10-30
 
 Hotfix: allow any OpenRouter model ID instead of a fixed dropdown list.
