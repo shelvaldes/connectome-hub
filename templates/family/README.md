@@ -1,6 +1,6 @@
 # Family Template
 
-This template ships four Connectome-compatible agent recipes designed to run as a small fleet on one host.
+This directory ships four Connectome-compatible agent recipes designed to run as a small fleet on one host.
 
 Each recipe follows the official `@animalabs/connectome-host` schema: memory, workspace, webui, and heartbeat modules enabled. Discord / MCPL server blocks are intentionally left out of the template; the CLI adds them when the user chooses a surface.
 
@@ -13,8 +13,4 @@ Each recipe follows the official `@animalabs/connectome-host` schema: memory, wo
 
 ## Usage
 
-```bash
-connectome-hub init --template family
-```
-
-Then fill in the four `PEGA AQUÍ EL PROMPT PERSONAL DE ...` placeholders before deploying.
+Copy the recipe you want into your agent install directory and fill in the `systemPrompt` placeholder before deploying. There is no `--template` flag yet; template selection is planned for a future release.
