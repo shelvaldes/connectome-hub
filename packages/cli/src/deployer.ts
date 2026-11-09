@@ -146,7 +146,7 @@ export function buildRemoteScript(options: DeployOptions): string {
 
   const packageJson = {
     name: 'connectome-hub-remote',
-    version: '0.1.1',
+    version: '0.1.2',
     type: 'module',
     dependencies: {
       '@animalabs/connectome-host': '^0.19.0',
@@ -172,7 +172,7 @@ export function buildRemoteScript(options: DeployOptions): string {
   lines.push('export PATH="${HOME}/.bun/bin:${PATH}"', '');
   lines.push('echo "[3/6] Preparing Connectome install directory..."');
   lines.push(`mkdir -p ${options.baseDir} && cd ${options.baseDir}`);
-  lines.push('cat > package.json <<'PKG_EOF'');
+  lines.push("cat > package.json <<'PKG_EOF'");
   lines.push(JSON.stringify(packageJson, null, 2));
   lines.push('PKG_EOF', '');
   lines.push('echo "[4/6] Installing Connectome dependencies..."');
