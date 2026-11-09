@@ -36,16 +36,21 @@ export async function runInit() {
     ? await input({ message: 'Paste the system prompt:' })
     : `You are ${agentName}. ${agentPersonality}.`;
 
-  const recipe = buildRecipe({ name: agentName, systemPrompt, model });
+  const recipe = buildRecipe({ name: agentName, systemPrompt, model, port: 7340 });
   const slug = agentName.toLowerCase().replace(/\s+/g, '-');
   const agent: AgentSpec = { name: slug, recipe, env: { OPENROUTER_API_KEY: apiKey } };
 
   if (target === 'local') {
     const baseDir = path.join(os.homedir(), '.connectome-hub');
-    const dirs = await deployLocal({ target: 'local', baseDir, agents: [agent] });
+    const result = await deployLocal({ target: 'local', baseDir, agents: [agent] });
     await saveHubConfig({ target: 'local', baseDir, agents: [{ name: slug }] });
-    console.log(chalk.green(`\n✅ Agent created locally at ${dirs[0]}`));
-    console.log(chalk.gray('Next: cd ~/.connectome-hub && bun install, then start the agent.'));
+    if (result.started.includes(slug)) {
+      console.log(chalk.green(`\n✅ Agent installed and started at ${result.dirs[0]}`));
+      console.log(chalk.gray('Use `connectome-hub agent:stop` / `agent:start` to control it.'));
+    } else {
+      console.log(chalk.green(`\n✅ Agent files written to ${result.dirs[0]}`));
+      console.log(chalk.yellow('It could not be started automatically.'));
+    }
   } else {
     const host = await input({ message: 'VPS IP or hostname:' });
     const user = await input({ message: 'SSH user:', default: 'root' });
