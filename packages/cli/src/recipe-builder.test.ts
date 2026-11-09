@@ -14,9 +14,9 @@ describe('buildRecipe', () => {
     expect(recipe.agent.provider).toBe('openrouter');
     expect(recipe.agent.systemPrompt).toBe('You are a test agent.');
     expect(recipe.agent.strategy?.type).toBe('autobiographical');
-    expect(recipe.modules?.webui).toBeDefined();
-    expect(recipe.modules?.workspace).toBeDefined();
-    expect(recipe.modules?.workspace?.mounts).toHaveLength(2);
+    expect((recipe.modules as any)?.webui).toBeDefined();
+    expect((recipe.modules as any)?.workspace).toBeDefined();
+    expect((recipe.modules as any)?.workspace?.mounts).toHaveLength(2);
   });
 
   it('uses provided model and port', () => {
@@ -27,6 +27,6 @@ describe('buildRecipe', () => {
       port: 7500
     });
     expect(recipe.agent.model).toBe('deepseek/deepseek-r1');
-    expect(recipe.modules?.webui?.port).toBe(7500);
+    expect((recipe.modules as any)?.webui?.port).toBe(7500);
   });
 });
