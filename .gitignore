@@ -33,6 +33,6 @@ tmp/
 temp/
 coverage/
 
-# Lockfiles we do not commit (we use bun.lockb)
+# We commit bun.lock for reproducible installs; ignore other package managers.
 package-lock.json
 yarn.lock

@@ -4,6 +4,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { execSync } from 'node:child_process';
 import chalk from 'chalk';
 
@@ -11,6 +12,36 @@ export interface AgentSpec {
   name: string;
   recipe: unknown;
   env: Record<string, string>;
+}
+
+export interface LocalRuntime {
+  bunPath: string;
+  hostScript: string;
+}
+
+/** Runtime layout used by the remote deploy script, which installs deps into baseDir. */
+export function remoteRuntime(baseDir: string, homeDir: string): LocalRuntime {
+  return {
+    bunPath: path.join(homeDir, '.bun', 'bin', 'bun'),
+    hostScript: path.join(baseDir, 'node_modules', '@animalabs', 'connectome-host', 'src', 'index.ts'),
+  };
+}
+
+/** Runtime layout for this checkout: use the Bun running the CLI and its installed host. */
+export function resolveLocalRuntime(): LocalRuntime {
+  const bunPath = process.execPath || path.join(os.homedir(), '.bun', 'bin', 'bun');
+  const resolved = import.meta.resolve('@animalabs/connectome-host/package.json');
+  const hostDir = path.dirname(resolved.startsWith('file:') ? fileURLToPath(resolved) : resolved);
+  return { bunPath, hostScript: path.join(hostDir, 'src', 'index.ts') };
+}
+
+function xmlEscape(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&apos;');
 }
 
 export interface DeployOptions {
@@ -26,6 +57,8 @@ export async function writeAgentInstallDir(agent: AgentSpec, baseDir: string): P
   const agentDir = path.join(baseDir, agent.name);
   await fs.mkdir(path.join(agentDir, 'recipes'), { recursive: true });
   await fs.mkdir(path.join(agentDir, 'data'), { recursive: true });
+  await fs.mkdir(path.join(agentDir, 'notes'), { recursive: true });
+  await fs.mkdir(path.join(baseDir, 'shared'), { recursive: true });
   await fs.chmod(path.join(agentDir, 'data'), 0o700);
   await fs.writeFile(path.join(agentDir, 'recipes', `${agent.name}.json`), JSON.stringify(agent.recipe, null, 2));
   const envLines = [`DATA_DIR=${agentDir}/data`];
@@ -35,24 +68,40 @@ export async function writeAgentInstallDir(agent: AgentSpec, baseDir: string): P
   return agentDir;
 }
 
-export function buildSystemdUnit(agent: AgentSpec, baseDir: string, homeDir: string): string {
-  const hostScript = path.join(baseDir, 'node_modules', '@animalabs', 'connectome-host', 'src', 'index.ts');
+export function buildSystemdUnit(
+  agent: AgentSpec,
+  baseDir: string,
+  homeDir: string,
+  runtime: LocalRuntime = remoteRuntime(baseDir, homeDir)
+): string {
   const recipePath = path.join(baseDir, agent.name, 'recipes', `${agent.name}.json`);
   return [
     '[Unit]', `Description=Connectome agent: ${agent.name}`, 'After=network.target', '',
     '[Service]', 'Type=simple',
     `WorkingDirectory=${path.join(baseDir, agent.name)}`,
     `EnvironmentFile=${path.join(baseDir, agent.name, '.env')}`,
-    `ExecStart=${homeDir}/.bun/bin/bun ${hostScript} ${recipePath} --headless`,
+    `Environment=PATH=${path.dirname(runtime.bunPath)}:/usr/local/bin:/usr/bin:/bin`,
+    `ExecStart=${runtime.bunPath} ${runtime.hostScript} ${recipePath} --headless`,
     'Restart=on-failure', 'RestartSec=5', '',
     '[Install]', 'WantedBy=default.target',
   ].join('\n');
 }
 
-export function buildLaunchdPlist(agent: AgentSpec, baseDir: string, homeDir: string): string {
-  const hostScript = path.join(baseDir, 'node_modules', '@animalabs', 'connectome-host', 'src', 'index.ts');
+export function buildLaunchdPlist(
+  agent: AgentSpec,
+  baseDir: string,
+  homeDir: string,
+  runtime: LocalRuntime = remoteRuntime(baseDir, homeDir)
+): string {
   const recipePath = path.join(baseDir, agent.name, 'recipes', `${agent.name}.json`);
   const agentDir = path.join(baseDir, agent.name);
+  const envEntries: Record<string, string> = {
+    DATA_DIR: path.join(agentDir, 'data'),
+    ...agent.env,
+  };
+  const envXml = Object.entries(envEntries)
+    .map(([key, value]) => `    <key>${xmlEscape(key)}</key>\n    <string>${xmlEscape(value)}</string>`)
+    .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -61,28 +110,25 @@ export function buildLaunchdPlist(agent: AgentSpec, baseDir: string, homeDir: st
   <string>cc.${agent.name}.agent</string>
   <key>ProgramArguments</key>
   <array>
-    <string>${homeDir}/.bun/bin/bun</string>
-    <string>${hostScript}</string>
-    <string>${recipePath}</string>
+    <string>${xmlEscape(runtime.bunPath)}</string>
+    <string>${xmlEscape(runtime.hostScript)}</string>
+    <string>${xmlEscape(recipePath)}</string>
     <string>--headless</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>${agentDir}</string>
+  <string>${xmlEscape(agentDir)}</string>
   <key>EnvironmentVariables</key>
   <dict>
-    <key>OPENROUTER_API_KEY</key>
-    <string>${agent.env.OPENROUTER_API_KEY || ''}</string>
-    <key>DATA_DIR</key>
-    <string>${path.join(agentDir, 'data')}</string>
+${envXml}
   </dict>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>${path.join(agentDir, 'data', 'launchd-stdout.log')}</string>
+  <string>${xmlEscape(path.join(agentDir, 'data', 'launchd-stdout.log'))}</string>
   <key>StandardErrorPath</key>
-  <string>${path.join(agentDir, 'data', 'launchd-stderr.log')}</string>
+  <string>${xmlEscape(path.join(agentDir, 'data', 'launchd-stderr.log'))}</string>
 </dict>
 </plist>`;
 }
@@ -90,14 +136,15 @@ export function buildLaunchdPlist(agent: AgentSpec, baseDir: string, homeDir: st
 export async function installServiceLocal(agent: AgentSpec, baseDir: string): Promise<void> {
   const platform = os.platform();
   const homeDir = os.homedir();
+  const runtime = resolveLocalRuntime();
   if (platform === 'linux') {
     const unitDir = path.join(homeDir, '.config', 'systemd', 'user');
     await fs.mkdir(unitDir, { recursive: true });
-    await fs.writeFile(path.join(unitDir, `${agent.name}-agent.service`), buildSystemdUnit(agent, baseDir, homeDir));
+    await fs.writeFile(path.join(unitDir, `${agent.name}-agent.service`), buildSystemdUnit(agent, baseDir, homeDir, runtime));
   } else if (platform === 'darwin') {
     const launchDir = path.join(homeDir, 'Library', 'LaunchAgents');
     await fs.mkdir(launchDir, { recursive: true });
-    await fs.writeFile(path.join(launchDir, `cc.${agent.name}.agent.plist`), buildLaunchdPlist(agent, baseDir, homeDir));
+    await fs.writeFile(path.join(launchDir, `cc.${agent.name}.agent.plist`), buildLaunchdPlist(agent, baseDir, homeDir, runtime));
   } else {
     throw new Error(`Unsupported platform: ${platform}`);
   }
@@ -146,7 +193,7 @@ export function buildRemoteScript(options: DeployOptions): string {
 
   const packageJson = {
     name: 'connectome-hub-remote',
-    version: '0.1.2',
+    version: '0.1.3',
     type: 'module',
     dependencies: {
       '@animalabs/connectome-host': '^0.19.0',

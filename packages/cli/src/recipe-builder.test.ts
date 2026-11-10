@@ -13,7 +13,9 @@ describe('buildRecipe', () => {
     expect(recipe.agent.model).toBe('anthropic/claude-haiku-4');
     expect(recipe.agent.provider).toBe('openrouter');
     expect(recipe.agent.systemPrompt).toBe('You are a test agent.');
+    expect(recipe.agent.maxStreamTokens).toBe(180000);
     expect(recipe.agent.strategy?.type).toBe('autobiographical');
+    expect(recipe.agent.strategy?.summaryParticipant).toBe('test-agent');
     expect((recipe.modules as any)?.webui).toBeDefined();
     expect((recipe.modules as any)?.workspace).toBeDefined();
     expect((recipe.modules as any)?.workspace?.mounts).toHaveLength(2);

@@ -13,18 +13,19 @@ export interface AgentOptions {
 
 export function buildRecipe(options: AgentOptions): Recipe {
   const name = options.name;
+  const slug = name.toLowerCase().replace(/\s+/g, '-');
   return {
     name: name.charAt(0).toUpperCase() + name.slice(1),
     description: `Agent created by Connectome Hub`,
     agent: {
-      name: name.toLowerCase().replace(/\s+/g, '-'),
+      name: slug,
       model: options.model || 'anthropic/claude-haiku-4',
       provider: 'openrouter',
       timezone: options.timezone || 'America/Monterrey',
       systemPrompt: options.systemPrompt,
       maxTokens: 8192,
+      maxStreamTokens: 180000,
       contextBudgetTokens: 160000,
-      recentWindowTokens: 60000,
       cacheTtl: '1h',
       strategy: {
         type: 'autobiographical',
@@ -40,7 +41,7 @@ export function buildRecipe(options: AgentOptions): Recipe {
         enforceBudget: true,
         overBudgetGraceRatio: 0.35,
         maxSpeculativeL1s: 36,
-        summaryParticipant: name
+        summaryParticipant: slug
       },
       proseRouting: 'locus'
     },

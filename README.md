@@ -9,15 +9,16 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.2**
+**Current version: v0.1.3**
 
-### v0.1.2 fixes
-- Local deployment now writes and starts systemd (Linux) or launchd (macOS) services automatically.
-- Remote deploy script now writes a `package.json`, exports `~/.bun/bin` to PATH, and tolerates missing `systemctl`.
-- Model selection is now a free-text OpenRouter model ID instead of a fixed list.
-- WebUI ports are assigned sequentially so multiple agents do not collide.
-- Workspace mounts (`notes`, `shared`) are included in generated recipes.
-- Removed the false `--template` promise from the family template docs.
+### v0.1.3 fixes
+- Added `install.sh`: installs Bun when missing, installs dependencies, and launches the wizard. A new user can go from `git clone` to the wizard without setting up Bun manually.
+- Local systemd and launchd units now resolve the Bun binary that runs the CLI and the host script from the installed package, instead of assuming a `node_modules` tree under `~/.connectome-hub`.
+- `agent:add` now installs the service unit so `agent:start` works immediately.
+- `init` merges the existing hub config and assigns sequential WebUI ports.
+- Workspace mounts (`notes`, `shared`) are created during install.
+- Generated recipes use the agent slug for `summaryParticipant` and include `maxStreamTokens`.
+- `bun test` no longer picks up compiled tests from `dist/`.
 
 | Feature | Status |
 |---|---|
@@ -33,16 +34,27 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Requirements
 
-- [Bun](https://bun.sh/) 1.4.3+
 - Linux (systemd user services) or macOS
 - OpenRouter API key
 - For remote: a VPS with SSH access
+
+`install.sh` installs Bun automatically. If you prefer to manage it yourself, use [Bun](https://bun.sh/) 1.4.3+.
 
 ## Quick start
 
 ```bash
 git clone https://github.com/shelvaldes/connectome-hub.git
 cd connectome-hub
+./install.sh
+```
+
+The bootstrap installs Bun if it is missing, installs dependencies, and starts the wizard. To install without launching the wizard (for CI or a manual review), run `./install.sh --no-launch`.
+
+### Manual setup
+
+If Bun is already installed:
+
+```bash
 bun install
 bun start init
 ```
@@ -78,7 +90,10 @@ For each agent, it creates an install directory:
 ~/.connectome-hub/<agent>/
 ├── recipes/<agent>.json   # Connectome Host recipe
 ├── .env                    # Secrets (API key, DATA_DIR)
-└── data/                   # Chronicle memory store
+├── data/                   # Chronicle memory store
+└── notes/                  # Agent workspace mount
+
+~/.connectome-hub/shared/   # Shared workspace mount
 ```
 
 On Linux it also writes `~/.config/systemd/user/<agent>-agent.service` and starts it. On macOS it writes `~/Library/LaunchAgents/cc.<agent>.agent.plist`.

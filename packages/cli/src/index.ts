@@ -9,7 +9,7 @@ import { addAgent, listAgents, startAgents, stopAgents } from './commands.js';
 program
   .name('connectome-hub')
   .description('A human-friendly installer and manager for Connectome agents.')
-  .version('0.1.0');
+  .version('0.1.3');
 
 program
   .command('init')

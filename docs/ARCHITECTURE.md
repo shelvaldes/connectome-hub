@@ -11,6 +11,9 @@ Every agent deployed by Connectome Hub runs through the official `@animalabs/con
 ## Stack
 
 ```
+Bootstrap
+└── install.sh           — installs Bun when missing, dependencies, and launches the wizard
+
 CLI layer (packages/cli)
 ├── src/index.ts         — commander entry point
 ├── src/wizard.ts        — Mike, the onboarding wizard
@@ -48,10 +51,13 @@ Each agent gets a directory like:
 ~/.connectome-hub/<agent>/
 ├── recipes/<agent>.json   # recipe consumed by connectome-host
 ├── .env                    # OPENROUTER_API_KEY, DATA_DIR
-└── data/                   # chronicle store, logs, session state
+├── data/                   # chronicle store, logs, session state
+└── notes/                  # agent workspace mount
+
+~/.connectome-hub/shared/   # shared workspace mount
 ```
 
-The recipe follows the official Connectome Host schema. Secrets live only in `.env`.
+The recipe follows the official Connectome Host schema. Secrets live only in `.env`. Local services resolve the Bun binary that runs the CLI and the host script from the installed package, so the service does not depend on a `node_modules` tree under `~/.connectome-hub`.
 
 ## Local vs remote
 

@@ -5,6 +5,12 @@
 ```bash
 git clone https://github.com/shelvaldes/connectome-hub.git
 cd connectome-hub
+./install.sh
+```
+
+`install.sh` installs Bun if it is missing, installs dependencies, and launches the wizard. For a manual setup with Bun already installed:
+
+```bash
 bun install
 bun start init
 ```

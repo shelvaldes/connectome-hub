@@ -1,5 +1,18 @@
 import { describe, it, expect } from 'bun:test';
-import { buildSystemdUnit, buildLaunchdPlist, buildRemoteScript, buildControlCommand, type AgentSpec, type DeployOptions } from './deployer.js';
+import { existsSync } from 'node:fs';
+import { mkdtemp, rm, stat } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import path from 'node:path';
+import {
+  buildSystemdUnit,
+  buildLaunchdPlist,
+  buildRemoteScript,
+  buildControlCommand,
+  resolveLocalRuntime,
+  writeAgentInstallDir,
+  type AgentSpec,
+  type DeployOptions,
+} from './deployer.js';
 
 const agent: AgentSpec = {
   name: 'maito-gai',
@@ -20,6 +33,47 @@ describe('deployer', () => {
     expect(plist).toContain('cc.maito-gai.agent');
     expect(plist).toContain('/Users/gai/.bun/bin/bun');
     expect(plist).toContain('--headless');
+  });
+
+  it('uses an explicit local runtime when provided', () => {
+    const unit = buildSystemdUnit(agent, '/opt/connectome-hub', '/root', {
+      bunPath: '/custom/bin/bun',
+      hostScript: '/custom/host/src/index.ts',
+    });
+    expect(unit).toContain('ExecStart=/custom/bin/bun /custom/host/src/index.ts');
+    expect(unit).toContain('Environment=PATH=/custom/bin:/usr/local/bin:/usr/bin:/bin');
+  });
+
+  it('includes every env var in the launchd plist', () => {
+    const plist = buildLaunchdPlist(
+      { ...agent, env: { OPENROUTER_API_KEY: 'sk-test', EXTRA_FLAG: 'a&b' } },
+      '/opt/connectome-hub',
+      '/Users/gai',
+      {
+        bunPath: '/Users/gai/.bun/bin/bun',
+        hostScript: '/opt/connectome-hub/node_modules/@animalabs/connectome-host/src/index.ts',
+      },
+    );
+    expect(plist).toContain('<key>EXTRA_FLAG</key>');
+    expect(plist).toContain('<string>a&amp;b</string>');
+  });
+
+  it('resolves the host script from the installed package', () => {
+    const runtime = resolveLocalRuntime();
+    expect(runtime.bunPath).toBe(process.execPath);
+    expect(existsSync(runtime.hostScript)).toBe(true);
+  });
+
+  it('creates notes and shared mounts with a private env file', async () => {
+    const baseDir = await mkdtemp(path.join(tmpdir(), 'connectome-hub-test-'));
+    try {
+      const agentDir = await writeAgentInstallDir(agent, baseDir);
+      expect((await stat(path.join(agentDir, 'notes'))).isDirectory()).toBe(true);
+      expect((await stat(path.join(baseDir, 'shared'))).isDirectory()).toBe(true);
+      expect((await stat(path.join(agentDir, '.env'))).mode & 0o777).toBe(0o600);
+    } finally {
+      await rm(baseDir, { recursive: true, force: true });
+    }
   });
 
   it('builds a remote script with package.json and PATH export', () => {

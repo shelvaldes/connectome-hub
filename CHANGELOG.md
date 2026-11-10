@@ -1,5 +1,21 @@
 # Changelog
 
+## v0.1.3 — 2026-11-09
+
+Onboarding fixes for a first-time install without prior tooling.
+
+### Added
+- `install.sh` bootstrap: installs Bun when missing, installs dependencies, and launches the wizard. `--no-launch` stops before the wizard.
+- README quick start now uses `./install.sh`; manual Bun setup remains documented.
+
+### Fixed
+- Local systemd and launchd units resolve the Bun binary that runs the CLI and the host script from the installed package. They no longer point to a non-existent `~/.connectome-hub/node_modules/...` tree.
+- `agent:add` installs the service unit, so `agent:start` works for agents added after `init`.
+- `init` merges the existing hub config and assigns sequential WebUI ports.
+- Workspace `notes/` and `shared/` directories are created during install.
+- Generated recipes use the agent slug for `summaryParticipant` and include `maxStreamTokens`.
+- `bun test` no longer runs compiled tests from `dist/`.
+
 ## v0.1.2 — 2026-11-09
 
 Bug fixes based on first manual review.

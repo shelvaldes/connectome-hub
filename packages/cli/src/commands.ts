@@ -12,6 +12,7 @@ import {
   loadHubConfig,
   saveHubConfig,
   writeAgentInstallDir,
+  installServiceLocal,
   buildRemoteScript,
   buildControlCommand,
   type AgentSpec,
@@ -82,6 +83,7 @@ export async function addAgent(): Promise<void> {
   if (config.target === 'local') {
     const baseDir = config.baseDir as string;
     await writeAgentInstallDir(agentSpec, baseDir);
+    await installServiceLocal(agentSpec, baseDir);
     console.log(chalk.green(`\n✅ Agent files created at ${path.join(baseDir, slug)}`));
     console.log(chalk.gray('Run `connectome-hub agent:start` to start it.'));
   } else {

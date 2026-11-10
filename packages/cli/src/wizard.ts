@@ -1,7 +1,7 @@
 import { select, input, password } from '@inquirer/prompts';
 import chalk from 'chalk';
 import { buildRecipe } from './recipe-builder.js';
-import { deployLocal, buildRemoteScript, saveHubConfig, type AgentSpec, type DeployOptions } from './deployer.js';
+import { deployLocal, buildRemoteScript, loadHubConfig, saveHubConfig, type AgentSpec, type DeployOptions } from './deployer.js';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
@@ -36,14 +36,22 @@ export async function runInit() {
     ? await input({ message: 'Paste the system prompt:' })
     : `You are ${agentName}. ${agentPersonality}.`;
 
-  const recipe = buildRecipe({ name: agentName, systemPrompt, model, port: 7340 });
+  const previous = await loadHubConfig();
+  const previousAgents = previous.target === target && Array.isArray(previous.agents)
+    ? previous.agents as Array<{ name: string; createdAt?: string }>
+    : [];
+  const port = 7340 + previousAgents.length;
+  const recipe = buildRecipe({ name: agentName, systemPrompt, model, port });
   const slug = agentName.toLowerCase().replace(/\s+/g, '-');
   const agent: AgentSpec = { name: slug, recipe, env: { OPENROUTER_API_KEY: apiKey } };
+  const nextAgents = previousAgents.some(a => a.name === slug)
+    ? previousAgents
+    : [...previousAgents, { name: slug, createdAt: new Date().toISOString() }];
 
   if (target === 'local') {
     const baseDir = path.join(os.homedir(), '.connectome-hub');
     const result = await deployLocal({ target: 'local', baseDir, agents: [agent] });
-    await saveHubConfig({ target: 'local', baseDir, agents: [{ name: slug }] });
+    await saveHubConfig({ ...previous, target: 'local', baseDir, agents: nextAgents });
     if (result.started.includes(slug)) {
       console.log(chalk.green(`\n✅ Agent installed and started at ${result.dirs[0]}`));
       console.log(chalk.gray('Use `connectome-hub agent:stop` / `agent:start` to control it.'));
@@ -60,7 +68,7 @@ export async function runInit() {
     const scriptPath = path.join(os.homedir(), '.connectome-hub', 'deploy.sh');
     await fs.mkdir(path.dirname(scriptPath), { recursive: true });
     await fs.writeFile(scriptPath, script);
-    await saveHubConfig({ target: 'remote', baseDir, remoteHost: host, remoteUser: user, agents: [{ name: slug }] });
+    await saveHubConfig({ ...previous, target: 'remote', baseDir, remoteHost: host, remoteUser: user, agents: nextAgents });
     console.log(chalk.green(`\n✅ Remote deploy script written to ${scriptPath}`));
     console.log(chalk.gray('Next: scp that script to your VPS and run `bash deploy.sh` there.'));
   }
