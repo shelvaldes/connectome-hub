@@ -86,6 +86,7 @@ bun start init
 | `chub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
 | `chub agent:restart [name]` | Restart one or all agents, reloading the recipe |
 | `chub update` | Update the hub checkout, dependencies, and global command |
+| `chub gemini-bridge` | Run the native Gemini bridge (safety filters off) |
 
 `connectome-hub` is kept as an alias for the same commands.
 

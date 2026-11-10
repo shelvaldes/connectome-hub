@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.8 — 2026-11-10
+
+### Added
+- `chub gemini-bridge`: a native Gemini bridge. It exposes an OpenAI-compatible `/v1/chat/completions` endpoint and translates requests to the native Gemini `generateContent` API with `safetySettings: BLOCK_NONE`, so agents can run Gemini without Google's content filters. Point a recipe's `baseUrl` at the bridge and set `allowedTools: []` to use it.
+
 ## v0.1.7 — 2026-11-10
 
 ### Added

@@ -10,7 +10,7 @@ import { updateHub } from './update.js';
 program
   .name('chub')
   .description('A human-friendly installer and manager for Connectome agents.')
-  .version('0.1.7');
+  .version('0.1.8');
 
 program
   .command('init')
@@ -52,5 +52,14 @@ program
   .command('update')
   .description('Update Connectome Hub from its git checkout')
   .action(updateHub);
+
+program
+  .command('gemini-bridge')
+  .description('Run the native Gemini bridge (safety filters off)')
+  .action(async () => {
+    await import('./gemini-bridge.js');
+  });
+
+program.parse();
 
 program.parse();
