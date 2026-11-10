@@ -86,7 +86,7 @@ async function handle(req: Request): Promise<Response> {
   const payload: any = {
     ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),
     contents,
-    generationConfig: { maxOutputTokens: body.max_tokens || 4096, temperature: body.temperature ?? 0.9 },
+    generationConfig: { maxOutputTokens: body.max_tokens || 4096, temperature: body.temperature ?? 0.7 },
     safetySettings: SAFETY,
   };
 
@@ -104,33 +104,48 @@ async function handle(req: Request): Promise<Response> {
     const stream = new ReadableStream({
       async start(controller) {
         const enc = new TextEncoder();
+        const id = 'chatcmpl-' + Date.now();
+        const finish = (reason: string) => {
+          try {
+            controller.enqueue(enc.encode(sse({ id, object: 'chat.completion.chunk', choices: [{ index: 0, delta: {}, finish_reason: reason }] })));
+            controller.enqueue(enc.encode('data: [DONE]\n\n'));
+            controller.close();
+          } catch { /* already closed */ }
+        };
         try {
           const res = await fetch(`${base}/models/${model}:streamGenerateContent?alt=sse`, {
             method: 'POST', headers, body: JSON.stringify(payload),
           });
-          const text = await res.text();
-          if (!res.ok) {
-            controller.enqueue(enc.encode(sse({ error: { message: text.slice(0, 400) } })));
-            controller.close();
+          if (!res.ok || !res.body) {
+            await res.text().catch(() => '');
+            finish('stop');
             return;
           }
-          const id = 'chatcmpl-' + Date.now();
-          for (const line of text.split('\n')) {
-            if (!line.startsWith('data:')) continue;
-            const raw = line.slice(5).trim();
-            if (!raw) continue;
-            let obj: any = {};
-            try { obj = JSON.parse(raw); } catch { continue; }
-            const delta = (obj.candidates?.[0]?.content?.parts || []).map((p: any) => p.text ?? '').join('');
-            if (delta) {
-              controller.enqueue(enc.encode(sse({ id, object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: delta }, finish_reason: null }] })));
+          const reader = res.body.getReader();
+          const decoder = new TextDecoder();
+          let buf = '';
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            buf += decoder.decode(value, { stream: true });
+            let idx;
+            while ((idx = buf.indexOf('\n')) >= 0) {
+              const line = buf.slice(0, idx).trim();
+              buf = buf.slice(idx + 1);
+              if (!line.startsWith('data:')) continue;
+              const raw = line.slice(5).trim();
+              if (!raw) continue;
+              let obj: any = {};
+              try { obj = JSON.parse(raw); } catch { continue; }
+              const delta = (obj.candidates?.[0]?.content?.parts || []).map((p: any) => p.text ?? '').join('');
+              if (delta) {
+                controller.enqueue(enc.encode(sse({ id, object: 'chat.completion.chunk', choices: [{ index: 0, delta: { content: delta }, finish_reason: null }] })));
+              }
             }
           }
-          controller.enqueue(enc.encode(sse({ id, object: 'chat.completion.chunk', choices: [{ index: 0, delta: {}, finish_reason: 'stop' }] })));
-          controller.enqueue(enc.encode('data: [DONE]\n\n'));
-          controller.close();
-        } catch (err) {
-          controller.error(err as Error);
+          finish('stop');
+        } catch {
+          finish('stop');
         }
       },
     });
@@ -146,4 +161,4 @@ async function handle(req: Request): Promise<Response> {
 }
 
 console.log(`gemini-bridge listening on http://127.0.0.1:${port} (key ${apiKey ? 'set' : 'MISSING'})`);
-serve({ hostname: '127.0.0.1', port, fetch: handle });
+serve({ hostname: '127.0.0.1', port, idleTimeout: 0, fetch: handle });
