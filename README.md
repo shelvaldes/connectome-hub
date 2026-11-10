@@ -113,6 +113,10 @@ For each agent, it creates an install directory:
 
 On Linux it also writes `~/.config/systemd/user/<agent>-agent.service` and starts it. On macOS it writes `~/Library/LaunchAgents/cc.<agent>.agent.plist`.
 
+## Upstream updates
+
+The Connectome Host runtime is pinned deliberately. A weekly GitHub Actions workflow checks npm for a newer release and opens an issue when one appears. The bump is reviewed against the changelog and tested with `bun run typecheck`, `bun test`, and a `provider: "mock"` boot before merging. `chub update` updates the hub itself; engine upgrades stay opt-in.
+
 ## Architecture & flow
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)

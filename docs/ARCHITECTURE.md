@@ -66,4 +66,4 @@ The recipe follows the official Connectome Host schema. Secrets live only in `.e
 
 ## Updates from upstream
 
-Bump `@animalabs/connectome-host` and related packages in `package.json`, then reinstall. A future `upgrade` command will automate this.
+The host is pinned deliberately. `.github/workflows/upstream-check.yml` runs weekly, opens an issue when npm has a newer release, and closes it when the pinned version is back in sync. The bump is reviewed against the changelog and tested with a `provider: "mock"` boot before merging. `chub update` updates the hub itself; engine upgrades stay opt-in.
