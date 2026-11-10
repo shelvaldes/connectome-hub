@@ -1,6 +1,6 @@
 {
   "name": "@shelvaldes/connectome-hub",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A human-friendly installer and manager for the Connectome agent stack by Anima Research.",
   "type": "module",
   "private": true,

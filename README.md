@@ -9,7 +9,11 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.3**
+**Current version: v0.1.4**
+
+### v0.1.4 fixes
+- `install.sh` now registers the `connectome-hub` command globally with `bun link`, so `connectome-hub agent:start` works from any directory.
+- The wizard message now shows the complete command instead of the ambiguous `agent:start`.
 
 ### v0.1.3 fixes
 - Added `install.sh`: installs Bun when missing, installs dependencies, and launches the wizard. A new user can go from `git clone` to the wizard without setting up Bun manually.
@@ -48,7 +52,7 @@ cd connectome-hub
 ./install.sh
 ```
 
-The bootstrap installs Bun if it is missing, installs dependencies, and starts the wizard. To install without launching the wizard (for CI or a manual review), run `./install.sh --no-launch`.
+The bootstrap installs Bun if it is missing, installs dependencies, installs the `connectome-hub` command, and starts the wizard. To install without launching the wizard (for CI or a manual review), run `./install.sh --no-launch`.
 
 ### Manual setup
 

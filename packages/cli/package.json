@@ -1,6 +1,6 @@
 {
   "name": "@connectome-hub/cli",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Interactive CLI installer and manager for Connectome agents.",
   "type": "module",
   "main": "dist/src/index.js",

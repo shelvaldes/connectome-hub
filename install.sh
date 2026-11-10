@@ -81,8 +81,17 @@ say "Bun $BUN_VERSION listo."
 say "Instalando dependencias..."
 "$BUN_BIN" install
 
+say "Instalando el comando connectome-hub..."
+if ! ( cd packages/cli && "$BUN_BIN" link ); then
+  die "No se pudo registrar el comando connectome-hub."
+fi
+if [ ! -x "$BUN_INSTALL/bin/connectome-hub" ]; then
+  die "No se creó el comando en $BUN_INSTALL/bin/connectome-hub."
+fi
+say "Comando connectome-hub listo en $BUN_INSTALL/bin."
+
 if [ "$NO_LAUNCH" -eq 1 ]; then
-  say "Dependencias instaladas. No se lanzó el wizard (--no-launch)."
+  say "Dependencias y comando instalados. No se lanzó el wizard (--no-launch)."
   exit 0
 fi
 

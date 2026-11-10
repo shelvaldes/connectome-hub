@@ -193,7 +193,7 @@ export function buildRemoteScript(options: DeployOptions): string {
 
   const packageJson = {
     name: 'connectome-hub-remote',
-    version: '0.1.3',
+    version: '0.1.4',
     type: 'module',
     dependencies: {
       '@animalabs/connectome-host': '^0.19.0',

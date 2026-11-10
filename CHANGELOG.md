@@ -1,5 +1,11 @@
 # Changelog
 
+## v0.1.4 — 2026-11-10
+
+### Fixed
+- `install.sh` now registers the `connectome-hub` command globally with `bun link`, so first-time users can run `connectome-hub agent:start` without prefixing `bun start` or navigating into `packages/cli`.
+- The wizard now prints the full `connectome-hub agent:start` / `connectome-hub agent:stop` commands instead of an ambiguous `agent:start`.
+
 ## v0.1.3 — 2026-11-09
 
 Onboarding fixes for a first-time install without prior tooling.
