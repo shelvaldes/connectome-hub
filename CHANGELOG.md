@@ -1,8 +1,9 @@
 # Changelog
 
-## Unreleased
+## v0.1.7 — 2026-11-10
 
 ### Added
+- `chub agent:restart` restarts one agent or all and reloads its recipe.
 - Weekly `upstream-check` workflow: compares the pinned `@animalabs/connectome-host` with npm, opens an issue when a newer release exists, and closes it when the versions sync.
 
 ### Fixed

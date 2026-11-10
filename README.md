@@ -9,7 +9,11 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.6**
+**Current version: v0.1.7**
+
+### v0.1.7 fixes
+- Added `chub agent:restart` to reload a recipe without memorizing `systemctl`.
+- Added the weekly upstream check workflow.
 
 ### v0.1.6 fixes
 - Added `chub update` to update the hub checkout, dependencies, and global command.
@@ -80,6 +84,7 @@ bun start init
 | `chub agent:list` | List deployed agents |
 | `chub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
 | `chub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
+| `chub agent:restart [name]` | Restart one or all agents, reloading the recipe |
 | `chub update` | Update the hub checkout, dependencies, and global command |
 
 `connectome-hub` is kept as an alias for the same commands.

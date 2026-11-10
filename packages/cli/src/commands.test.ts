@@ -21,4 +21,8 @@ describe('buildControlCommand', () => {
     expect(buildControlCommand('remote', 'stop', 'maito-gai', 'root', '1.2.3.4'))
       .toBe('ssh root@1.2.3.4 "systemctl --user stop maito-gai-agent.service"');
   });
+  it('builds a local restart command', () => {
+    expect(buildControlCommand('local', 'restart', 'maito-gai'))
+      .toBe('systemctl --user restart maito-gai-agent.service');
+  });
 });

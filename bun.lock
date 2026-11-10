@@ -19,7 +19,7 @@
     },
     "packages/cli": {
       "name": "@connectome-hub/cli",
-      "version": "0.1.6",
+      "version": "0.1.7",
       "bin": {
         "chub": "./bin/connectome-hub",
         "connectome-hub": "./bin/connectome-hub",

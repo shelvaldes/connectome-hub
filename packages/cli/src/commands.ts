@@ -122,7 +122,7 @@ export async function listAgents(): Promise<void> {
   console.log(formatAgentList(agents) + '\n');
 }
 
-async function runControl(name: string | undefined, action: 'start' | 'stop'): Promise<void> {
+async function runControl(name: string | undefined, action: 'start' | 'stop' | 'restart'): Promise<void> {
   const config = await loadHubConfig();
   const agents = getAgents(config);
   if (agents.length === 0) {
@@ -137,3 +137,4 @@ async function runControl(name: string | undefined, action: 'start' | 'stop'): P
 
 export async function startAgents(name?: string): Promise<void> { await runControl(name, 'start'); }
 export async function stopAgents(name?: string): Promise<void> { await runControl(name, 'stop'); }
+export async function restartAgents(name?: string): Promise<void> { await runControl(name, 'restart'); }

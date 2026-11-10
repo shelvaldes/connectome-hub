@@ -4,13 +4,13 @@
 import { program } from 'commander';
 import chalk from 'chalk';
 import { runInit } from './wizard.js';
-import { addAgent, listAgents, startAgents, stopAgents } from './commands.js';
+import { addAgent, listAgents, startAgents, stopAgents, restartAgents } from './commands.js';
 import { updateHub } from './update.js';
 
 program
   .name('chub')
   .description('A human-friendly installer and manager for Connectome agents.')
-  .version('0.1.6');
+  .version('0.1.7');
 
 program
   .command('init')
@@ -41,6 +41,12 @@ program
   .argument('[name]', 'agent name (omit to pick interactively)')
   .description('Stop one agent or all')
   .action(stopAgents);
+
+program
+  .command('agent:restart')
+  .argument('[name]', 'agent name (omit to pick interactively)')
+  .description('Restart one agent or all, reloading its recipe')
+  .action(restartAgents);
 
 program
   .command('update')
