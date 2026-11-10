@@ -54,7 +54,7 @@ export async function runInit() {
     await saveHubConfig({ ...previous, target: 'local', baseDir, agents: nextAgents });
     if (result.started.includes(slug)) {
       console.log(chalk.green(`\n✅ Agent installed and started at ${result.dirs[0]}`));
-      console.log(chalk.gray('Use `connectome-hub agent:stop` or `connectome-hub agent:start` to control it.'));
+      console.log(chalk.gray('Use `chub agent:stop` or `chub agent:start` to control it.'));
     } else {
       console.log(chalk.green(`\n✅ Agent files written to ${result.dirs[0]}`));
       console.log(chalk.yellow('It could not be started automatically.'));

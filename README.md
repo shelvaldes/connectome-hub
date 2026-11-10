@@ -9,7 +9,11 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.4**
+**Current version: v0.1.5**
+
+### v0.1.5 fixes
+- `chub` is now the primary command; `connectome-hub` remains as an alias.
+- `install.sh` registers both commands.
 
 ### v0.1.4 fixes
 - `install.sh` now registers the `connectome-hub` command globally with `bun link`, so `connectome-hub agent:start` works from any directory.
@@ -52,7 +56,7 @@ cd connectome-hub
 ./install.sh
 ```
 
-The bootstrap installs Bun if it is missing, installs dependencies, installs the `connectome-hub` command, and starts the wizard. To install without launching the wizard (for CI or a manual review), run `./install.sh --no-launch`.
+The bootstrap installs Bun if it is missing, installs dependencies, installs the `chub` command (with `connectome-hub` as an alias), and starts the wizard. To install without launching the wizard (for CI or a manual review), run `./install.sh --no-launch`.
 
 ### Manual setup
 
@@ -67,11 +71,13 @@ bun start init
 
 | Command | Description |
 |---|---|
-| `connectome-hub init` | First-time wizard |
-| `connectome-hub agent:add` | Add a new agent |
-| `connectome-hub agent:list` | List deployed agents |
-| `connectome-hub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
-| `connectome-hub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
+| `chub init` | First-time wizard |
+| `chub agent:add` | Add a new agent |
+| `chub agent:list` | List deployed agents |
+| `chub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
+| `chub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
+
+`connectome-hub` is kept as an alias for the same commands.
 
 ## Model selection
 

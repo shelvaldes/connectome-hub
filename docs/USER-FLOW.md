@@ -35,11 +35,13 @@ bun start init
 ## Day-to-day commands
 
 ```bash
-connectome-hub agent:add      # add another agent
-connectome-hub agent:list     # list agents
-connectome-hub agent:start    # start one or all agents (interactive picker)
-connectome-hub agent:stop     # stop one or all agents (interactive picker)
+chub agent:add      # add another agent
+chub agent:list     # list agents
+chub agent:start    # start one or all agents (interactive picker)
+chub agent:stop     # stop one or all agents (interactive picker)
 ```
+
+`connectome-hub` is kept as an alias.
 
 ## Remote deployment
 

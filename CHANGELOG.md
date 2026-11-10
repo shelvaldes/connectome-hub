@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.5 — 2026-11-10
+
+### Changed
+- `chub` is now the primary CLI command. `connectome-hub` remains as an alias.
+
+### Fixed
+- `install.sh` registers both `chub` and `connectome-hub` with `bun link`.
+
 ## v0.1.4 — 2026-11-10
 
 ### Fixed

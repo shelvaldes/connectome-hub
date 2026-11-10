@@ -81,14 +81,14 @@ say "Bun $BUN_VERSION listo."
 say "Instalando dependencias..."
 "$BUN_BIN" install
 
-say "Instalando el comando connectome-hub..."
+say "Instalando los comandos chub y connectome-hub..."
 if ! ( cd packages/cli && "$BUN_BIN" link ); then
-  die "No se pudo registrar el comando connectome-hub."
+  die "No se pudieron registrar los comandos."
 fi
-if [ ! -x "$BUN_INSTALL/bin/connectome-hub" ]; then
-  die "No se creó el comando en $BUN_INSTALL/bin/connectome-hub."
+if [ ! -x "$BUN_INSTALL/bin/chub" ] || [ ! -x "$BUN_INSTALL/bin/connectome-hub" ]; then
+  die "No se crearon los comandos en $BUN_INSTALL/bin."
 fi
-say "Comando connectome-hub listo en $BUN_INSTALL/bin."
+say "Comandos listos: chub (principal) y connectome-hub (alias)."
 
 if [ "$NO_LAUNCH" -eq 1 ]; then
   say "Dependencias y comando instalados. No se lanzó el wizard (--no-launch)."
