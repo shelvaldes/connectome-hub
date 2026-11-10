@@ -89,6 +89,7 @@ if [ ! -x "$BUN_INSTALL/bin/chub" ] || [ ! -x "$BUN_INSTALL/bin/connectome-hub" 
   die "No se crearon los comandos en $BUN_INSTALL/bin."
 fi
 say "Comandos listos: chub (principal) y connectome-hub (alias)."
+say "Si esta terminal todavía no reconoce 'chub', ejecuta: exec zsh"
 
 if [ "$NO_LAUNCH" -eq 1 ]; then
   say "Dependencias y comando instalados. No se lanzó el wizard (--no-launch)."

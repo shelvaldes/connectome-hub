@@ -5,6 +5,9 @@
 ### Added
 - Weekly `upstream-check` workflow: compares the pinned `@animalabs/connectome-host` with npm, opens an issue when a newer release exists, and closes it when the versions sync.
 
+### Fixed
+- `install.sh` reminds users to run `exec zsh` when the current terminal does not see the new `chub` command.
+
 ## v0.1.6 — 2026-11-10
 
 ### Added
