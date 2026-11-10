@@ -81,7 +81,13 @@ async function handle(req: Request): Promise<Response> {
 
   const body: any = await req.json().catch(() => ({}));
   const model = (body.model || 'gemini-3.7-flash').replace(/^models\//, '');
-  const { contents, system } = buildContents(body.messages || [], '');
+  const msgCount = Array.isArray(body.messages) ? body.messages.length : 0;
+  console.log(`[req] model=${model} stream=${!!body.stream} messages=${msgCount} tools=${Array.isArray(body.tools) ? body.tools.length : 0} temperature=${body.temperature ?? 'default'}`);
+  const prefill = process.env.GEMINI_PREFILL || '¡YOSH! La llama de la juventud responde a tu llamado, Shel. Aquí estoy.';
+  const incoming: Msg[] = Array.isArray(body.messages) ? body.messages : [];
+  const hasAssistant = incoming.some((m) => m?.role === 'assistant');
+  const messages: Msg[] = hasAssistant ? incoming : [{ role: 'assistant', content: prefill }, ...incoming];
+  const { contents, system } = buildContents(messages, '');
 
   const payload: any = {
     ...(system ? { systemInstruction: { parts: [{ text: system }] } } : {}),

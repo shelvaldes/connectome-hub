@@ -10,7 +10,7 @@ import { updateHub } from './update.js';
 program
   .name('chub')
   .description('A human-friendly installer and manager for Connectome agents.')
-  .version('0.1.8');
+  .version('0.1.9');
 
 program
   .command('init')

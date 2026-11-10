@@ -1,5 +1,10 @@
 # Changelog
 
+## v0.1.9 — 2026-11-10
+
+### Fixed
+- The native Gemini bridge now seeds the first turn with an in-character assistant prefill (configurable with `GEMINI_PREFILL`). Gemini stays in character on strong identity/invocation prompts that otherwise triggered an assistant-style analysis.
+
 ## v0.1.8 — 2026-11-10
 
 ### Added
