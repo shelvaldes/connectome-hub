@@ -39,6 +39,7 @@ chub agent:add      # add another agent
 chub agent:list     # list agents
 chub agent:start    # start one or all agents (interactive picker)
 chub agent:stop     # stop one or all agents (interactive picker)
+chub update         # update the hub checkout, dependencies, and command
 ```
 
 `connectome-hub` is kept as an alias.

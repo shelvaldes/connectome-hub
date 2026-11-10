@@ -9,7 +9,11 @@ Connectome Hub is a **UX wrapper**, not a fork. It asks questions, generates val
 
 ## Status
 
-**Current version: v0.1.5**
+**Current version: v0.1.6**
+
+### v0.1.6 fixes
+- Added `chub update` to update the hub checkout, dependencies, and global command.
+- Mike now uses the angel emoji, matching San Miguel Arcángel.
 
 ### v0.1.5 fixes
 - `chub` is now the primary command; `connectome-hub` remains as an alias.
@@ -76,6 +80,7 @@ bun start init
 | `chub agent:list` | List deployed agents |
 | `chub agent:start [name]` | Start one or all agents (interactive picker if omitted) |
 | `chub agent:stop [name]` | Stop one or all agents (interactive picker if omitted) |
+| `chub update` | Update the hub checkout, dependencies, and global command |
 
 `connectome-hub` is kept as an alias for the same commands.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## v0.1.6 — 2026-11-10
+
+### Added
+- `chub update` updates the hub checkout, dependencies, and global command. It refuses to run with local changes; a modified `bun.lock` is discarded safely.
+
+### Fixed
+- Mike uses the angel emoji, matching San Miguel Arcángel, instead of a devil.
+
 ## v0.1.5 — 2026-11-10
 
 ### Changed

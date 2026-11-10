@@ -8,7 +8,7 @@ import os from 'node:os';
 
 // In nomine Sancti Michaelis Archangeli
 export async function runInit() {
-  console.log(chalk.cyan('\n😈 Mike (temporary guide): I\'ll help you set up your first Connectome agent.\n'));
+  console.log(chalk.cyan('\n😇 Mike (temporary guide): I\'ll help you set up your first Connectome agent.\n'));
 
   const target = await select({
     message: 'Where do you want to run your agents?',
